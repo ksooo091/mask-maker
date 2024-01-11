@@ -6,7 +6,7 @@ import json
 from json import dumps
 
 properties = parser.ConfigParser()
-properties.read('./config.ini')
+properties.read('./config/config.ini')
 aws_config = properties['AWS']
 aws_access_key_id = aws_config['aws_access_key_id']
 aws_secret_access_key = aws_config['aws_secret_access_key']
