@@ -66,7 +66,8 @@ producer = KafkaProducer(
 # 카프카 메시지 처리
 for message in consumer:
     message = message.value.decode('utf-8')
-    producer.send('maskImage', value=json.dumps({"image_key": image_convert(json.loads(message).pop('userMail'))}))
+    producer.send('maskImage', value=json.dumps({"image_key": image_convert(json.loads(message).pop('image_key')),
+                                                 "user_mail": json.loads(message).pop('user_mail')}))
 
 producer.close()
 consumer.close()
