@@ -44,10 +44,10 @@ def image_convert(message):
 
     origin_key = json.loads(message).pop('origin_key')
     image_bytes = s3.get_object(Bucket=s3_bucket, Key=origin_key)["Body"].read()
-    image_key = origin_key.split('/')[1]
+    image_key = origin_key.split('/')[1]+json.loads(message).pop('user_mail')+now
     s3.put_object(Bucket=s3_bucket, Key="mask/" + image_key, Body=remove(image_bytes, only_mask=True))
     print("Converted and put Success. User : " + json.loads(message).pop('user_mail'))
-    return image_key+json.loads(message).pop('user_mail')+now
+    return image_key
 
 
 # 카프카 컨슈머 설정
