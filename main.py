@@ -36,17 +36,17 @@ def s3_connection():
 
 s3 = s3_connection()
 
-#TBD 인수 늘려서 메일 오리진키값 직접받기
-def image_convert(message):
+
+def image_convert(originKey, userMail):
     now = time.time()
     now = int(now)
     now = str(now)
 
-    origin_key = json.loads(message).pop('origin_key')
+    origin_key = originKey
     image_bytes = s3.get_object(Bucket=s3_bucket, Key=origin_key)["Body"].read()
-    image_key = origin_key.split('/')[1]+json.loads(message).pop('user_mail')+now
+    image_key = (origin_key.split('/')[1]).split('.')[0]+userMail+now+".png"
     s3.put_object(Bucket=s3_bucket, Key="mask/" + image_key, Body=remove(image_bytes, only_mask=True))
-    print("Converted and put Success. User : " + json.loads(message).pop('user_mail'))
+    print("Converted and put Success. User : " + userMail )
     return image_key
 
 
@@ -74,9 +74,10 @@ producer = KafkaProducer(
 # 카프카 메시지 처리
 for message in consumer:
     message = message.value.decode('utf-8')
+    user_mail = json.loads(message).pop('user_mail') 
     producer.send('maskImage', value=json.dumps({"prompt":json.loads(message).pop('prompt'),
-                                                 "mask_key": image_convert(message),
-                                                 "user_mail": json.loads(message).pop('user_mail'),
+                                                 "mask_key": image_convert(json.loads(message).pop('origin_key'),user_mail),
+                                                 "user_mail": user_mail,
                                                  "origin_key": json.loads(message).pop('origin_key')
                                                 }))
 
