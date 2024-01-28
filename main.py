@@ -21,6 +21,7 @@ gcp_config = properties['gcp']
 project_id = gcp_config['project_id']
 gcs_bucket = gcp_config['gcs_bucket']
 
+
 def gcs_connection():
     client = storage.Client(project="study-406403")
     return client

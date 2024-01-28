@@ -1,4 +1,4 @@
 boto3==1.33.11
 kafka-python==2.0.2
 rembg==2.0.53
-
+google-cloud-storage==2.14.0
