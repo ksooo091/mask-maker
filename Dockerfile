@@ -10,6 +10,6 @@ WORKDIR /app
 
 COPY --from=build	/app .
 ENV PYTHONPATH="${PYTHONPATH}:/app/dependencies"
-COPY config.ini .
+#COPY config.ini .
 COPY main.py .
 ENTRYPOINT ["python", "main.py"]
