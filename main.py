@@ -23,7 +23,7 @@ gcs_bucket = gcp_config['gcs_bucket']
 
 
 def gcs_connection():
-    client = storage.Client(project="study-406403")
+    client = storage.Client(project=project_id)
     return client
 
 
@@ -42,7 +42,8 @@ def s3_connection():
         return s3
 
 
-s3 = s3_connection()
+# s3 = s3_connection()
+bucket = gcs_connection().bucket(gcs_bucket)
 
 
 def image_convert(origin_key, mail):
@@ -61,7 +62,7 @@ def image_convert_gcs(origin_key, mail):
     now = time.time()
     now = int(now)
     now = str(now)
-    bucket = gcs_connection().bucket(gcs_bucket)
+
     image_bytes = bucket.blob(origin_key).download_as_string()
     image_key = (origin_key.split('/')[1]).split('.')[0] + mail + now + ".png"
     blob = bucket.blob(image_key)
@@ -96,8 +97,8 @@ for message in consumer:
     message = message.value.decode('utf-8')
     user_mail = json.loads(message).pop('user_mail')
     producer.send('maskImage', value=json.dumps({"prompt": json.loads(message).pop('prompt'),
-                                                 "mask_key": image_convert(json.loads(message).pop('origin_key'),
-                                                                           user_mail),
+                                                 "mask_key": image_convert_gcs(json.loads(message).pop('origin_key'),
+                                                                               user_mail),
                                                  "user_mail": user_mail,
                                                  "origin_key": json.loads(message).pop('origin_key')
                                                  }))
