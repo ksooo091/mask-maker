@@ -96,12 +96,12 @@ producer = KafkaProducer(
 for message in consumer:
     message = message.value.decode('utf-8')
     user_mail = json.loads(message).pop('user_mail')
-    producer.send('maskImage', value=json.dumps({"prompt": json.loads(message).pop('prompt'),
-                                                 "mask_key": image_convert_gcs(json.loads(message).pop('origin_key'),
-                                                                               user_mail),
-                                                 "user_mail": user_mail,
-                                                 "origin_key": json.loads(message).pop('origin_key')
-                                                 }))
+    producer.send('originImage', value=json.dumps({"prompt": json.loads(message).pop('prompt'),
+                                                   "mask_key": image_convert_gcs(json.loads(message).pop('origin_key'),
+                                                                                 user_mail),
+                                                   "user_mail": user_mail,
+                                                   "origin_key": json.loads(message).pop('origin_key')
+                                                   }))
 
 producer.close()
 consumer.close()
